@@ -8,7 +8,7 @@
             <el-icon><House /></el-icon>
             <span>首页</span>
           </el-menu-item>
-          <el-menu-item index="2">
+          <el-menu-item index="overview">
             <el-icon><Document /></el-icon>
             <span>系统概览</span>
           </el-menu-item>
@@ -62,7 +62,7 @@
             <el-icon><Memo /></el-icon>
             <span>登录日志</span>
           </el-menu-item>
-          <el-menu-item index="9">
+          <el-menu-item index="set">
             <el-icon><setting /></el-icon>
             <span>系统设置</span>
           </el-menu-item>
@@ -70,10 +70,10 @@
       </el-aside>
       <el-container>
         <el-header>
-          <span class="header-left-content">尊敬的 月月 迎您登录本系统</span>
+          <span class="header-left-content">尊敬的 {{ userStore.name }} 欢迎您登录本系统</span>
           <div class="header-right-content">
             <el-icon :size="20"><Message/></el-icon>
-            <el-avatar :size="34" :src="circleUrl" />
+            <el-avatar :size="34" :src="userStore.imageUrl" />
             <el-dropdown>
             <span class="el-dropdown-link">
             设置
@@ -110,18 +110,13 @@ import {
 import ref from 'vue'
 import { useRouter } from "vue-router";
 const router = useRouter()
-import { reactive, toRefs } from 'vue'
+import { userinfor } from '@/store/userinfor';
+const userStore = userinfor()
 
 
 const gologin = () =>{
   router.push('/login')
 }
-const state = reactive({
-  circleUrl:
-      'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
-})
-
-const { circleUrl } = toRefs(state)
 </script>
 
 <style lang="scss" scoped>
@@ -164,7 +159,10 @@ const { circleUrl } = toRefs(state)
     align-items: center;
   }
 }
-
+.el-main{
+  --el-main-padding: 0;
+  background: #f3f4fa;
+}
 .el-menu-item:hover{
   background: #006eff;
 }

@@ -1,5 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
+import login from '@/views/login/index.vue'
+import menu from '@/views/menu/index.vue'
+import home from '@/views/home/index.vue'
+import set from '@/views/set/index.vue'
+import overview from '@/views/overview/index.vue'
+
 const routes =[
 	{
 		path:'/',
@@ -8,17 +14,27 @@ const routes =[
 	{
 		name:'login',
 		path:'/login',
-		component:()=>import('@/views/login/index.vue')
+		component:login
 	},
 	{
 		name:'menu',
 		path:'/menu',
-		component:()=>import('@/views/menu/index.vue'),
+		component:menu,
 		children:[
 			{
 			name:'home',
 			path:'/home',
-			component:()=>import('@/views/home/index.vue')
+			component:home
+			},
+			{
+				name:'set',
+				path:'/set',
+				component:set
+			},
+			{
+				name:'overview',
+				path:'/overview',
+				component:overview
 			}
 		]
 	},

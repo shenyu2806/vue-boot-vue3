@@ -82,6 +82,9 @@ const router = useRouter()
 const activeName = ref('first')
 import {login,register} from '@/api/login'
 import forget from './components/forget_password.vue'
+import { userinfor } from '@/store/userinfor';
+
+const store =userinfor()
 
 //忘记密码
 const forgetP = ref()
@@ -108,13 +111,16 @@ const registerDate : formDate = reactive({
 
 const Login = async () => {
   const res = await login(loginDate)
-  const { token } = res.data
-  if(res.data.message=="登录成功"){
+  if(res.message=="登录成功"){
+    const { token } = res
+    const { id } = res.results
     ElMessage({
       message: '登录成功！',
       type: 'success',
     })
+    localStorage.setItem('id',id)
     localStorage.setItem('token',token)
+    store.userinfor(id)
     //跳转
     router.push('/home')
   }else {
@@ -124,13 +130,13 @@ const Login = async () => {
 const Register = async () => {
   if(registerDate.password==registerDate.repassword){
     const res = await register(registerDate)
-    if(res.data.message=="注册账号成功"){
+    if(res.massage=="注册账号成功"){
       ElMessage({
           message: '注册成功！',
           type: 'success',
       })
       activeName.value ='first'
-    }else if(res.data.massage=="账号已存在"){
+    }else if(res.massage=="账号已存在"){
       ElMessage({
         message: '账号已存在!',
         type: 'warning',
