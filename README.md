@@ -5,10 +5,10 @@
 <img width="100%" src="https://gitee.com/fs529/bote_images_url/raw/master/vue-boot-vue/qty1.png" alt="加载失败"/>
 </p>
 <p>
-<img width="50%" src="https://gitee.com/fs529/bote_images_url/raw/master/vue-boot-vue/qty2.png" alt="加载失败"/>
+<img width="100%" src="https://gitee.com/fs529/bote_images_url/raw/master/vue-boot-vue/qty2.png" alt="加载失败"/>
 </p>
 <p>
-<img width="50%" src="https://gitee.com/fs529/bote_images_url/raw/master/vue-boot-vue/qty3.png" alt="加载失败"/>
+<img width="100%" src="https://gitee.com/fs529/bote_images_url/raw/master/vue-boot-vue/qty3.png" alt="加载失败"/>
 </p>
 
 <h3>团星网后台管理系统</h3>
