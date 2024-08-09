@@ -1,6 +1,6 @@
 {
-  "name": "vue3_cli_default",
-  "version": "0.0.0",
+  "name": "团星网管理系统",
+  "version": "1.0.3",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -22,7 +22,8 @@
     "style-loader": "^4.0.0",
     "vite-plugin-svg-icons": "^2.0.1",
     "vue": "latest",
-    "vue-router": "^4.4.0"
+    "vue-router": "^4.4.0",
+    "webpack": "^5.93.0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^1.6.0",

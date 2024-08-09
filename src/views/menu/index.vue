@@ -12,55 +12,82 @@
             <el-icon><Document /></el-icon>
             <span>系统概览</span>
           </el-menu-item>
-          <el-sub-menu index="3">
+          <el-sub-menu index="3" v-if="userStore.identity=='管理员'">
             <template #title>
               <el-icon><User /></el-icon>
               <span>用户管理</span>
             </template>
             <el-menu-item-group title="管理员管理">
-              <el-menu-item index="3-1">产品管理员</el-menu-item>
-              <el-menu-item index="3-2">用户管理员</el-menu-item>
-              <el-menu-item index="3-3">信息管理员</el-menu-item>
+              <el-menu-item index="/user/user_product_manage">产品管理员</el-menu-item>
+              <el-menu-item index="/user/users_manage">用户管理员</el-menu-item>
+              <el-menu-item index="/user/message_manage">信息管理员</el-menu-item>
             </el-menu-item-group>
             <el-menu-item-group title="员工管理">
-              <el-menu-item index="3-4">用户列表</el-menu-item>
+              <el-menu-item index="/user/users_list">用户列表</el-menu-item>
             </el-menu-item-group>
           </el-sub-menu>
-          <el-sub-menu index="4">
+          <el-sub-menu index="4" v-if="userStore.identity=='管理员'">
             <template #title>
               <el-icon><TakeawayBox /></el-icon>
               <span>产品管理</span>
             </template>
             <el-menu-item-group title="入库管理">
-              <el-menu-item index="4-1">产品列表</el-menu-item>
+              <el-menu-item index="/product/product_manage">产品列表</el-menu-item>
             </el-menu-item-group>
             <el-menu-item-group title="出库管理">
-              <el-menu-item index="4-2">用户列表</el-menu-item>
+              <el-menu-item index="/product/out_produc_manage">出库列表</el-menu-item>
             </el-menu-item-group>
           </el-sub-menu>
-          <el-sub-menu index="5">
+          <el-sub-menu index="5" v-if="userStore.identity=='管理员'">
             <template #title>
               <el-icon><ChatLineRound /></el-icon>
               <span>消息管理</span>
             </template>
             <el-menu-item-group title="消息管理">
-              <el-menu-item index="5-1">消息列表</el-menu-item>
+              <el-menu-item index="/403">消息列表</el-menu-item>
             </el-menu-item-group>
             <el-menu-item-group title="回收站">
-              <el-menu-item index="5-2">回收站</el-menu-item>
+              <el-menu-item index="/403">回收站</el-menu-item>
             </el-menu-item-group>
           </el-sub-menu>
-          <el-menu-item index="6">
+          <el-menu-item index="/403" v-if="userStore.identity=='管理员'">
             <el-icon><Folder /></el-icon>
             <span>合同管理</span>
           </el-menu-item>
-          <el-menu-item index="7">
-            <el-icon><DocumentCopy /></el-icon>
-            <span>操作日志</span>
+          <el-sub-menu index="11" v-if="userStore.identity=='管理员'">
+            <template #title>
+              <el-icon><ChatLineRound /></el-icon>
+              <span>ao管理</span>
+            </template>
+            <el-menu-item-group title="用户管理">
+              <el-menu-item index="/403">用户设置</el-menu-item>
+              <el-menu-item index="/403">管理员设置</el-menu-item>
+            </el-menu-item-group>
+            <el-menu-item-group title="权限管理">
+              <el-menu-item index="/403">权限管理</el-menu-item>
+              <el-menu-item index="/403">权限信息</el-menu-item>
+            </el-menu-item-group>
+          </el-sub-menu>
+          <el-sub-menu index="12" v-if="userStore.identity=='管理员'">
+            <template #title>
+              <el-icon><ChatLineRound /></el-icon>
+              <span>日志管理</span>
+            </template>
+            <el-menu-item-group title="常规日志">
+              <el-menu-item index="/longs/longs_long">登录日志</el-menu-item>
+            </el-menu-item-group>
+            <el-menu-item-group title="高危日志">
+              <el-menu-item index="/403">操作管理</el-menu-item>
+            </el-menu-item-group>
+          </el-sub-menu>
+<!--          用户操作-->
+          <el-menu-item index="/403" v-if="userStore.identity !='管理员'">
+            <el-icon><Folder /></el-icon>
+            <span>待办事项</span>
           </el-menu-item>
-          <el-menu-item index="8">
-            <el-icon><Memo /></el-icon>
-            <span>登录日志</span>
+          <el-menu-item index="/403" v-if="userStore.identity !='管理员'">
+            <el-icon><Folder /></el-icon>
+            <span>ao系统</span>
           </el-menu-item>
           <el-menu-item index="set">
             <el-icon><setting /></el-icon>
@@ -113,8 +140,8 @@ const router = useRouter()
 import { userinfor } from '@/store/userinfor';
 const userStore = userinfor()
 
-
 const gologin = () =>{
+  localStorage.clear()
   router.push('/login')
 }
 </script>
@@ -124,7 +151,7 @@ const gologin = () =>{
   width: 210px;
   height: 100vh;
   background: #2b303b;
-  overflow-y: hidden;
+  overflow-X: hidden;
   .el-menu{
     background: #2b303b;
     width: 210px;

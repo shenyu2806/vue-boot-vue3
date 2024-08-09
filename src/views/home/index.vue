@@ -75,10 +75,8 @@ getAllswiper()
 const companyintroduces =ref([])
 const getAllCompanyintroduce = async ()=>{
   const res = await getAllCompanyIntroduce()
-  if(res.status==0){
-    const [name,...intro] = res.result
-    companyintroduces.value = intro
-  }
+  const [name,...intro] = res.result
+  companyintroduces.value = intro
 }
 getAllCompanyintroduce()
 

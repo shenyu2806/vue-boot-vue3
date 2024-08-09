@@ -1,10 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
-import login from '@/views/login/index.vue'
-import menu from '@/views/menu/index.vue'
-import home from '@/views/home/index.vue'
-import set from '@/views/set/index.vue'
-import overview from '@/views/overview/index.vue'
+import a404 from '@/views/err/404.vue'
 
 const routes =[
 	{
@@ -14,30 +10,21 @@ const routes =[
 	{
 		name:'login',
 		path:'/login',
-		component:login
+		component:()=>import("@/views/login/index.vue")
 	},
 	{
 		name:'menu',
 		path:'/menu',
-		component:menu,
-		children:[
-			{
-			name:'home',
-			path:'/home',
-			component:home
-			},
-			{
-				name:'set',
-				path:'/set',
-				component:set
-			},
-			{
-				name:'overview',
-				path:'/overview',
-				component:overview
-			}
-		]
+		component:()=>import("@/views/menu/index.vue"),
+		// children:[]
 	},
+	{
+		name:'404',
+		path:'/404',
+		component:a404
+	},
+	// 当什么都没有匹配到的时候，重定向页面到 404 页面
+	{ path: "/:pathMatch(.*)", redirect: "/404", name: "notMatch", hidden: true },
 ]
 
 // 创建router实例

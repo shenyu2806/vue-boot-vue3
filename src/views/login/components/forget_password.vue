@@ -20,10 +20,10 @@
 <!--  忘记密码2-->
   <el-dialog v-model="state.changePasswordDialog" title="修改密码" width="400px">
     <el-form class="login-form" :label-position="labelPosition" :rules="rules">
-      <el-form-item label="输入你的新密码" prop="password">
+      <el-form-item label="输入你的新密码(6~12字符)" prop="password">
         <el-input v-model="forgetDate.password" placeholder=""/>
       </el-form-item>
-      <el-form-item label="确认你的新密码" prop="repassword">
+      <el-form-item label="确认你的新密码(6~12字符)" prop="repassword">
         <el-input v-model="forgetDate.repassword" placeholder=""/>
       </el-form-item>
     </el-form>
@@ -83,14 +83,14 @@ const state = reactive({
 const resetPaassword = async () =>{
   if(forgetDate.repassword==forgetDate.password){
     const res = await resetPassword(localStorage.getItem('id'),forgetDate.password)
-    if(res.data.message=="更新成功"){
+    if(res.status==0){
       ElMessage({
         message: '修改成功',
         type: 'success',
-      }),
-      (state.forgetPasswordDialog = false)()
+      })
+      pent()
     }else{
-      ElMessage.error('服务器异常!')
+      ElMessage.error('密码要由一个英文字母+数字组成!')
     }
   }else{
     ElMessage.error('密码不一致')
@@ -101,19 +101,22 @@ const resetPaassword = async () =>{
 const open = () =>{
   state.forgetPasswordDialog = true
 }
+const pent = () =>{
+  state.changePasswordDialog = false
+}
 //打开修改密码
 const verifyAccount = async () =>{
   const res = await verify(forgetDate)
-  if(res.data.status==0){
+  if(res.status==0){
     ElMessage({
       message: '一切正常',
       type: 'success',
     })
-    localStorage.setItem('id',res.data.id)
+    localStorage.setItem('id',res.id)
     state.forgetPasswordDialog = false
     state.changePasswordDialog = true
   }else{
-    ElMessage.error('你记错了')
+    ElMessage.error(res.message)
   }
 }
 

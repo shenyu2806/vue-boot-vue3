@@ -27,12 +27,12 @@
                   <el-button type="primary" @click="Login">登录</el-button>
                 </div>
                 <div class="footer-go-register">
-                  还没有账号?<span class="go-register">马上注册</span>
+                  还没有账号?<span class="go-register" @click="xzregister">马上注册</span>
                 </div>
               </div>
             </el-form>
           </el-tab-pane>
-          <el-tab-pane label="注册" name="second">
+          <el-tab-pane label="注册" name="second" :rules="rules" :disabled="stopse" style="margin-top: -10px">
             <el-form class="login-form">
               <el-form-item label="账号">
                 <el-input v-model="registerDate.account" placeholder="账号长度6~12位"/>
@@ -79,12 +79,37 @@ import { ref,reactive } from 'vue'
 import { ElMessage } from 'element-plus'
 import { useRouter } from "vue-router";
 const router = useRouter()
-const activeName = ref('first')
-import {login,register} from '@/api/login'
+import {login,register,returnMenuList} from '@/api/login'
+import {getReatCode} from '@/api/stting'
 import forget from './components/forget_password.vue'
 import { userinfor } from '@/store/userinfor';
+import { useMenu } from '@/store/menu'
+//日志
+import { longReckon } from '@/api/logs'
 
-const store =userinfor()
+const usemenu = useMenu()
+const store = userinfor()
+const activeName = ref('first')
+const stopse = ref(true)
+const xzregister = () =>{
+  if(stopse.value === true){
+   ElMessage.error('注册不可用')
+  }else{
+    activeName.value='second'
+  }
+}
+//查询是否允许注册
+const getreatCode = async () =>{
+  const res = await getReatCode()
+  if(res != null){
+    if(res.rety == "0"){
+      stopse.value = false
+    }else{
+      stopse.value = true
+    }
+  }
+}
+getreatCode()
 
 //忘记密码
 const forgetP = ref()
@@ -93,7 +118,7 @@ const openForget = () =>{
 }
 // 表单接口
 interface formDate {
-  account: number;
+  account: string;
   password: string;
   repassword ?: string;
 }
@@ -109,44 +134,52 @@ const registerDate : formDate = reactive({
   repassword:''
 })
 
+const rules = reactive({
+  account:[
+    {required:true,message:'请输入您的注册账号',trigger:'blur'},
+],
+password:[
+    {required:true,message:'请输入您的密码',trigger:'blur'},
+],
+repassword:[
+  {required:true,message:'请再次确认您的密码',trigger:'blur'},
+],
+})
+
 const Login = async () => {
-  const res = await login(loginDate)
-  if(res.message=="登录成功"){
-    const { token } = res
-    const { id } = res.results
-    ElMessage({
-      message: '登录成功！',
-      type: 'success',
-    })
-    localStorage.setItem('id',id)
-    localStorage.setItem('token',token)
-    store.userinfor(id)
-    //跳转
-    router.push('/home')
-  }else {
-    ElMessage.error('登录失败！')
+  if (loginDate.account == null | loginDate.password == null) {
+    ElMessage.error('输入不要留下空白！')
+  }else{
+    const res = await login(loginDate)
+    if(res.status==0){
+      const { token } = res
+      const { id } = res.results
+      localStorage.setItem('id',id)
+      localStorage.setItem('token',token)
+      const asd = await returnMenuList(id) as any
+      usemenu.setrouteriop(asd)
+      store.userinfor(id)
+      await longReckon(store.account,store.email,store.name+"登录成功!")
+      //跳转
+      router.push('/home')
+    }else{
+      ElMessage.error('你输入的内容不正确！')
+    }
   }
 }
 const Register = async () => {
-  if(registerDate.password==registerDate.repassword){
-    const res = await register(registerDate)
-    if(res.massage=="注册账号成功"){
-      ElMessage({
-          message: '注册成功！',
-          type: 'success',
-      })
-      activeName.value ='first'
-    }else if(res.massage=="账号已存在"){
-      ElMessage({
-        message: '账号已存在!',
-        type: 'warning',
-      })
+  if(registerDate.account == null|registerDate.password == null|registerDate.repassword == null){
+    ElMessage({
+      message: '不要留空!',
+      type: 'warning',
+    })
+  }else{
+    if(registerDate.password==registerDate.repassword){
+      const res = await register(registerDate)
       activeName.value ='first'
     }else{
-      ElMessage.error('注册失败！')
+      ElMessage.error('密码不一致！')
     }
-  }else{
-    ElMessage.error('密码不一致！')
   }
 }
 

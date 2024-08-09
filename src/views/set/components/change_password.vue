@@ -53,13 +53,13 @@ const changeuserPaassword = async () => {
 const id =localStorage.getItem('id')
   if(forgetDate.oldPassword && forgetDate.newpassword){
     const res = await ChangePassword(localStorage.getItem('id'),forgetDate.oldPassword,forgetDate.newpassword)
-    if(res.data.message==="修改成功"){
+    if(res.status==0){
       ElMessage({
         message: '修改成功',
         type:'success'
       })
     }else{
-      ElMessage.error("修改失败！"+res.data.message)
+      ElMessage.error("修改失败！原密码错误")
     }
   }else{
     ElMessage.error("不允许有空值")

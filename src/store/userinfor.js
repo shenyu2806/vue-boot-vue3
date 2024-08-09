@@ -4,6 +4,7 @@ import { getuserInfor} from "@/api/userinfor";
 export const userinfor = defineStore('userinfor',{
     state:()=>{
         return{
+            id:'',
             imageUrl:'',
             name:'',
             sex:'',
@@ -16,6 +17,7 @@ export const userinfor = defineStore('userinfor',{
     actions:{
         async userinfor (id){
             const res = await getuserInfor(id)
+            this.id = res.id
             this.imageUrl = res.image_url
             this.name = res.name
             this.sex = res.sex

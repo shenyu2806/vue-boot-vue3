@@ -22,7 +22,7 @@
             <div class="account-info-wrapped">
               <span>用户账号：</span>
               <div class="account-info-content">
-                <el-input v-model="AccountDateilDate.account" style="width: 240px" disabled placeholder="Please input"/>
+                <el-input v-model="AccountDateilDate.account" style="width: 240px" disabled placeholder="无"/>
               </div>
             </div>
             <div class="account-info-wrapped">
@@ -34,7 +34,7 @@
             <div class="account-info-wrapped">
               <span>用户姓名：</span>
               <div class="account-info-content">
-                <el-input v-model="AccountDateilDate.name" style="width: 240px" placeholder="Please input"/>
+                <el-input v-model="AccountDateilDate.name" style="width: 240px" placeholder="无"/>
               </div>
               <div class="account-save-button">
                 <el-button type="primary" @click="saveName">保存</el-button>
@@ -64,26 +64,26 @@
             <div class="account-info-wrapped">
               <span>用户身份：</span>
               <div class="account-info-content">
-                <el-input v-model="AccountDateilDate.identity" style="width: 240px" disabled placeholder="Please input"/>
+                <el-input v-model="AccountDateilDate.identity" style="width: 240px" disabled placeholder="无"/>
               </div>
             </div>
             <div class="account-info-wrapped">
               <span>用户部门：</span>
               <div class="account-info-content">
-                <el-input v-model="AccountDateilDate.depatment" style="width: 240px" disabled placeholder="Please input"/>
+                <el-input v-model="AccountDateilDate.depatment" style="width: 240px" disabled placeholder="无"/>
               </div>
             </div>
             <div class="account-info-wrapped">
               <span>用户邮箱：</span>
               <div class="account-info-content">
-                <el-input v-model="AccountDateilDate.email" style="width: 240px" placeholder="Please input"/>
+                <el-input v-model="AccountDateilDate.email" style="width: 240px" placeholder="无"/>
               </div>
               <div class="account-save-button">
                 <el-button type="primary" @click="saveEmail">保存</el-button>
               </div>
             </div>
           </el-tab-pane>
-          <el-tab-pane label="公司信息" name="second">
+          <el-tab-pane label="公司信息" name="second" v-if="userStore.identity=='管理员'">
             <div class="account-info-wrapped">
               <span>公司名称：</span>
               <div class="account-info-content">
@@ -118,7 +118,7 @@
               </div>
             </div>
           </el-tab-pane>
-          <el-tab-pane label="首页管理" name="third">
+          <el-tab-pane label="首页管理" name="third" v-if="userStore.identity=='管理员'">
             <div class="home-wrapped">
 <!--              提示-->
               <div class="tips">
@@ -140,7 +140,72 @@
               </div>
             </div>
           </el-tab-pane>
-          <el-tab-pane label="其他设置" name="fourth">其他设置</el-tab-pane>
+          <el-tab-pane label="其他设置" name="fourth" v-if="userStore.identity=='管理员'">
+            <div class="other-set">
+              <div class="department-set">
+                <span>允许注册</span>
+                <el-switch
+                    v-model="value3"
+                    inline-prompt
+                    active-text="是"
+                    inactive-text="否"
+                    @change="changereatCode"
+                />
+              </div>
+            </div>
+            <div class="other-set">
+              <div class="department-set">
+                <span>部门设置</span>
+                <el-tag
+                    v-for="tag in dynamicTags"
+                    :key="tag"
+                    closable
+                    :disable-transitions="false"
+                    @close="handleClose(tag)"
+                >
+                  {{ tag }}
+                </el-tag>
+                <el-input
+                    v-if="inputVisible"
+                    ref="InputRef"
+                    v-model="inputValue"
+                    class="w-20"
+                    size="small"
+                    @keyup.enter="handleInputConfirm"
+                    @blur="handleInputConfirm"
+                />
+                <el-button v-else class="button-new-tag" size="small" @click="showInput">
+                  + New
+                </el-button>
+              </div>
+            </div>
+            <div class="other-set">
+              <div class="department-set">
+                <span>产品类别</span>
+                <el-tag
+                    v-for="tag in chanpingTags"
+                    :key="tag"
+                    closable
+                    :disable-transitions="false"
+                    @close="handleClose2(tag)"
+                >
+                  {{ tag }}
+                </el-tag>
+                <el-input
+                    v-if="inputVisible2"
+                    ref="InputRef2"
+                    v-model="inputValue2"
+                    class="w-20"
+                    size="small"
+                    @keyup.enter="handleInputConfirm2"
+                    @blur="handleInputConfirm2"
+                />
+                <el-button v-else class="button-new-tag" size="small" @click="showInput2">
+                  + New
+                </el-button>
+              </div>
+            </div>
+          </el-tab-pane>
         </el-tabs>
       </div>
   </div>
@@ -150,13 +215,15 @@
 </template>
 <script lang="ts" setup>
 import bread_Crumb from '@/components/bread_crumb.vue';
-import { getCurrentInstance, reactive, ref } from "vue";
+import { nextTick,getCurrentInstance, reactive, ref,toRaw } from "vue";
+import { ElInput } from 'element-plus'
 import { bindes } from '@/api/userinfor'
 import change from './components/change_password.vue'
 import { userinfor } from '@/store/userinfor';
 import editor from './components/editor.vue'
 import { bus } from "@/utils/mitt.js"
-import {getCompanyName,changeCompanyName} from'@/api/stting'
+import {getCompanyName,changeCompanyName,
+  setDepartment,getDepartment,setproductment,getproductment} from'@/api/stting'
 
 const userStore = userinfor()
 const changeP =ref()
@@ -351,6 +418,165 @@ const openEdit= (id) =>{
   bus.emit("editorTitle",id)
   editorP.value.open()
 }
+
+//其他设置
+//允许注册
+import {getReatCode,changeReatCode} from '@/api/stting'
+const value3 = ref(true)
+const getreatCode = async () =>{
+  const res = await getReatCode()
+  if(res != null){
+    if(res.rety == "0"){
+      value3.value = true
+    }else{
+      value3.value = false
+    }
+  }
+}
+getreatCode()
+const changereatCode = async () =>{
+   let Code = 0
+  if(value3.value == false){
+    Code = 1
+  }
+  const res = await changeReatCode(Code)
+  if(res.status==0){
+    ElNotification({
+      title: '成功',
+      message: res.message,
+      type: 'success',
+    })
+    getreatCode()
+  }else{
+    ElNotification({
+      title: '错误',
+      message: '删除部门失败',
+      type: 'error',
+    })
+  }
+}
+//产品类别
+const inputValue2 = ref('')
+const chanpingTags = ref([])
+const inputVisible2 = ref(false)
+const InputRef2 = ref<InstanceType<typeof ElInput>>()
+//获取产品类别数据
+const getpRoductment = async () =>{
+  const res = await getproductment()
+  chanpingTags.value = res
+}
+getpRoductment()
+//关闭时的函数
+const handleClose2 = async (tag: string) => {
+  chanpingTags.value.splice(chanpingTags.value.indexOf(tag), 1)
+  const res = await setproductment(JSON.stringify(toRaw(chanpingTags.value)))
+  if(res.status==0){
+    ElNotification({
+      title: '成功',
+      message: res.message,
+      type: 'success',
+    })
+    getpRoductment()
+  }else{
+    ElNotification({
+      title: '错误',
+      message: '删除失败',
+      type: 'error',
+    })
+  }
+}
+//点击按钮出现输入框
+const showInput2 = () => {
+  inputVisible2.value = true
+  nextTick(() => {
+    InputRef2.value!.input!.focus()
+  })
+}
+// 输入数据的一个函数
+const handleInputConfirm2 = async () => {
+  if (inputValue2.value) {
+    chanpingTags.value.push(inputValue2.value)
+    const res = await setproductment(JSON.stringify(toRaw(chanpingTags.value)))
+    if(res.status==0){
+      ElNotification({
+        title: '成功',
+        message: '产品类别设置成功',
+        type: 'success',
+      })
+      getpRoductment()
+    }else{
+      ElNotification({
+        title: '错误',
+        message: '产品类别设置失败',
+        type: 'error',
+      })
+    }  }
+  inputVisible2.value = false
+  inputValue2.value = ''
+}
+
+// 部门设置
+const inputValue = ref('')
+const dynamicTags = ref([])
+const inputVisible = ref(false)
+const InputRef = ref<InstanceType<typeof ElInput>>()
+
+//获取部门数据
+const getdepartment = async () =>{
+  const res = await getDepartment()
+  dynamicTags.value = res
+}
+getdepartment()
+
+
+//关闭时的函数
+const handleClose = async (tag: string) => {
+  dynamicTags.value.splice(dynamicTags.value.indexOf(tag), 1)
+  const res = await setDepartment(JSON.stringify(toRaw(dynamicTags.value)))
+  if(res.status==0){
+    ElNotification({
+      title: '成功',
+      message: res.message,
+      type: 'success',
+    })
+    getdepartment()
+  }else{
+    ElNotification({
+      title: '错误',
+      message: '删除部门失败',
+      type: 'error',
+    })
+  }
+}
+//点击按钮出现输入框
+const showInput = () => {
+  inputVisible.value = true
+  nextTick(() => {
+    InputRef.value!.input!.focus()
+  })
+}
+// 输入数据的一个函数
+const handleInputConfirm = async () => {
+  if (inputValue.value) {
+    dynamicTags.value.push(inputValue.value)
+    const res = await setDepartment(JSON.stringify(toRaw(dynamicTags.value)))
+    if(res.status==0){
+      ElNotification({
+        title: '成功',
+        message: '添加部门成功',
+        type: 'success',
+      })
+      getdepartment()
+    }else{
+      ElNotification({
+        title: '错误',
+        message: '添加部门失败',
+        type: 'error',
+      })
+    }  }
+  inputVisible.value = false
+  inputValue.value = ''
+}
 </script>
 <style lang="scss" scoped>
 .common-wrapped{
@@ -414,11 +640,26 @@ const openEdit= (id) =>{
   }
 
 }
+
+//其他
+ .other-set{
+   padding-left: 50px;
+   font-size: 14px;
+   .department-set{
+     margin-bottom: 24px;
+     span{
+       margin-right: 24px;
+     }
+   }
+ }
+
+//上传头像
 .avatar-uploader .avatar {
   width: 178px;
   height: 178px;
   display: block;
 }
+//标签
 .demo-tabs>.el-tabs__content{
   padding: 32px;
   color: #6b778c;

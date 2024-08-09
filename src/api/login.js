@@ -4,6 +4,7 @@ import instance from "@/http/index";
 export const register = data => {
     const {
         account,
+        email,
         password
     } = data
     return instance({
@@ -11,6 +12,7 @@ export const register = data => {
         method: 'post',
         data: {
             account,
+            email,
             password
         }
     })
@@ -27,6 +29,16 @@ export const login = data => {
         data: {
             account,
             password
+        }
+    })
+}
+//路由表
+export const returnMenuList = (id) => {
+    return instance({
+        url: '/api/returnMenuList',
+        method: 'post',
+        data:{
+            id
         }
     })
 }

@@ -1,5 +1,22 @@
 import instance from "@/http/index";
 
+//获取是否允许注册
+export const getReatCode = () => {
+    return instance({
+        url: '/set/getReatCode',
+        method: 'post',
+    })
+}
+//修改是否允许注册
+export const changeReatCode = (set_value) => {
+    return instance({
+        url: '/set/changeReatCode',
+        method: 'post',
+        data:{
+            set_value
+        }
+    })
+}
 //获取全部轮播图数据
 export const getAllSwiper = () => {
     return instance({
@@ -51,4 +68,42 @@ export const getAllCompanyIntroduce = () => {
         url: '/set/getAllCompanyintroduce',
         method: 'post',
     })
+}
+//部门设置
+export const setDepartment = data => {
+    return instance({
+        url: '/set/setDepartment',
+        method: 'post',
+        data:{
+            set_value:data
+        }
+    })
+
+}
+//获取部门
+export const getDepartment = () => {
+    return instance({
+        url: '/set/getDepartment',
+        method: 'post',
+    })
+
+}
+//产品类别设置
+export const setproductment = data => {
+    return instance({
+        url: '/set/setproductment',
+        method: 'post',
+        data:{
+            set_value:data
+        }
+    })
+
+}
+//获取类别设置
+export const getproductment = () => {
+    return instance({
+        url: '/set/getproductment',
+        method: 'post',
+    })
+
 }
