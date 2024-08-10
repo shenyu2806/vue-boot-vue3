@@ -15,6 +15,7 @@
 <p>Vue3 +  vite  + element-plus + pinia + icons</p>
 <p>支持二开，商业使用</p>
 
+```bash
 # 安装命令可选 npm/cnpm 
 # 安装cnpm
 npm install cnpm
@@ -56,3 +57,4 @@ cnpm install @wangeditor/editor --save
 cnpm install @wangeditor/editor-for-vue@next --save
 ## echarts
 cnpm install echarts --save
+```
