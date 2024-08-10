@@ -1,5 +1,9 @@
-# V1.0.3
+# 团星网后台管理系统
+## V1.0.3
 # 项目介绍
+
+<p>Vue3 +  vite  + element-plus + pinia + icons</p>
+<p>支持二开，商业使用</p>
 
 <p>
 <img width="100%" src="https://gitee.com/fs529/bote_images_url/raw/master/vue-boot-vue/qty1.png" alt="加载失败"/>
@@ -10,10 +14,6 @@
 <p>
 <img width="100%" src="https://gitee.com/fs529/bote_images_url/raw/master/vue-boot-vue/qty3.png" alt="加载失败"/>
 </p>
-
-<h3>团星网后台管理系统</h3>
-<p>Vue3 +  vite  + element-plus + pinia + icons</p>
-<p>支持二开，商业使用</p>
 
 ```bash
 # 安装命令可选 npm/cnpm 
